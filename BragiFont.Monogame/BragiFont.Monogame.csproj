@@ -4,6 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Authors>Christian Webber</Authors>
+    <Company>Christian Webber</Company>
+    <RepositoryUrl>https://github.com/vonderborch/BragiFont</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/vonderborch/BragiFont</PackageProjectUrl>
+    <Description>An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.</Description>
+    <PackageTags>SharpFont, Monogame, SpriteFont, Font</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +41,13 @@
 
   <ItemGroup>
     <Folder Include="Internal\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
