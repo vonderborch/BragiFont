@@ -3,55 +3,98 @@ using SharpFont;
 
 namespace BragiFont
 {
+    /// <summary>
+    /// Various constants defined for the font system.
+    /// </summary>
     internal sealed class Constants
     {
-        private static readonly Constants _instance = new Constants();
+        /// <summary>
+        /// The default hidef texture size
+        /// </summary>
+        public const int DEFAULT_HIDEF_TEXTURE_SIZE = 2048;
 
+        /// <summary>
+        /// The default reach texture size
+        /// </summary>
+        public const int DEFAULT_REACH_TEXTURE_SIZE = 1024;
+
+        /// <summary>
+        /// The default cache surface format
+        /// </summary>
+        public const SurfaceFormat DEFAULT_CACHE_SURFACE_FORMAT = SurfaceFormat.Bgra4444;
+
+        /// <summary>
+        /// The glyph bitmap origin
+        /// </summary>
+        public static FTVector26Dot6 GlyphBitmapOrigin = new FTVector26Dot6(0, 0);
+
+        /// <summary>
+        /// The default character list
+        /// </summary>
+        private char[] _defaultCharacterList;
+
+        /// <summary>
+        /// The default characters
+        /// </summary>
+        public string DefaultCharacters = " AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789~`!@#$%^&*()_+-=[]\\{}|;':\",./<>?。？　【】｛｝、｜《》（）…￥";
+
+        /// <summary>
+        /// The default load flags
+        /// </summary>
+        public LoadFlags DefaultLoadFlags = LoadFlags.Default;
+
+        /// <summary>
+        /// The default load target
+        /// </summary>
+        public LoadTarget DefaultLoadTarget = LoadTarget.Normal;
+
+        /// <summary>
+        /// The default render mode
+        /// </summary>
+        public RenderMode DefaultRenderMode = RenderMode.Normal;
+
+        /// <summary>
+        /// The default spaces in a tab
+        /// </summary>
+        public int DefaultSpacesInTab = 4;
+
+        /// <summary>
+        /// The kerning sanity multiplier
+        /// </summary>
+        public int KerningSanityMultiplier = 5;
+
+        /// <summary>
+        /// Initializes the <see cref="Constants"/> class.
+        /// </summary>
         static Constants() { }
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="Constants"/> class from being created.
+        /// </summary>
         private Constants() { }
 
-        public static Constants Settings => _instance;
+        /// <summary>
+        /// Gets the settings.
+        /// </summary>
+        /// <value>
+        /// The settings.
+        /// </value>
+        public static Constants Settings { get; } = new Constants();
 
-        public string DEFAULT_CHARACTERS = " AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789~`!@#$%^&*()_+-=[]\\{}|;':\",./<>?。？　【】｛｝、｜《》（）…￥";
-
-        private char[] _defaultCharacterList = null;
-
-        public char[] DEFAULT_CHARACTER_LIST
+        /// <summary>
+        /// Gets or sets the default character list.
+        /// </summary>
+        /// <value>
+        /// The default character list.
+        /// </value>
+        public char[] DefaultCharacterList
         {
-            get
-            {
-                if (_defaultCharacterList == null)
-                {
-                    _defaultCharacterList = DEFAULT_CHARACTERS.ToCharArray();
-                }
-
-                return _defaultCharacterList;
-            }
+            get => _defaultCharacterList ?? (_defaultCharacterList = DefaultCharacters.ToCharArray());
             set
             {
                 _defaultCharacterList = value;
-                DEFAULT_CHARACTERS = new string(_defaultCharacterList);
+                DefaultCharacters = new string(_defaultCharacterList);
             }
         }
-
-        public const char DEFAULT_PRE_CHARACTER = '\0';
-
-        public const int DEFAULT_HIDEF_TEXTURE_SIZE = 2048;
-        public const int DEFAULT_REACH_TEXTURE_SIZE = 1024;
-
-        public const SurfaceFormat DEFAULT_CACHE_SURFACE_FORMAT = SurfaceFormat.Bgra4444;
-
-        public LoadFlags DEFAULT_LOAD_FLAGS = LoadFlags.Default;
-
-        public LoadTarget DEFAULT_LOAD_TARGET = LoadTarget.Normal;
-
-        public RenderMode DEFAULT_RENDER_MODE = RenderMode.Normal;
-
-        public static FTVector26Dot6 GLYPH_BITMAP_ORIGIN = new FTVector26Dot6(0, 0);
-
-        public int DEFAULT_SPACES_IN_TAB = 4;
-
-        public int KERNING_SANITY_MULTIPLIER = 5;
     }
 }

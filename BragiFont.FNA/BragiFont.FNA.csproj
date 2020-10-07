@@ -11,10 +11,12 @@
     <PackageProjectUrl>https://github.com/vonderborch/BragiFont</PackageProjectUrl>
     <Description>An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.</Description>
     <PackageTags>SharpFont, FNA, SpriteFont, Font</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>C:\Users\ricky\OneDrive\repos\BragiFont\BragiFont.FNA\BragiFont.FNA.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,6 +31,7 @@
     <Compile Include="..\BragiFont.Core\Internal\Character.cs" Link="Internal\Character.cs" />
     <Compile Include="..\BragiFont.Core\Internal\FontImplementation.cs" Link="Internal\FontImplementation.cs" />
     <Compile Include="..\BragiFont.Core\Internal\GlyphCache.cs" Link="Internal\GlyphCache.cs" />
+    <Compile Include="..\BragiFont.Core\Internal\Helpers.cs" Link="Internal\Helpers.cs" />
     <Compile Include="..\BragiFont.Core\Internal\TextCharacter.cs" Link="Internal\TextCharacter.cs" />
     <Compile Include="..\BragiFont.Core\Internal\TextImplementation.cs" Link="Internal\TextImplementation.cs" />
     <Compile Include="..\BragiFont.Core\Text.cs" Link="Text.cs" />
@@ -37,13 +40,19 @@
   <ItemGroup>
     <PackageReference Include="FNA.Package" Version="20.5.0" />
     <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
-    <PackageReference Include="SharpFont.NetStandard" Version="1.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Include="SharpFont.NetStandard" Version="1.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="C:\Users\ricky\.nuget\packages\sharpfont.dependencies\2.6.0\build\..\bin\msvc10\x86\freetype6.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\ricky\.nuget\packages\sharpfont.netstandard\1.0.2\contentFiles\any\netstandard2.0\lib\x64\freetype6.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\ricky\.nuget\packages\sharpfont.netstandard\1.0.2\contentFiles\any\netstandard2.0\lib\x86\freetype6.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

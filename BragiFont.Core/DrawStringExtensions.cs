@@ -1,31 +1,46 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using System.Text;
 using BragiFont;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-//  This class is deliberately not in a namespace so you can use it without "using" anything
-
+// ReSharper disable once CheckNamespace
+// ReSharper disable once UnusedMember.Global
 public static class DrawStringExtension
 {
     /// <summary>
-    /// Draw textto SpriteBatch with the given Font.
-    /// This method is SLOWER than the override that takes a BragiText instead of a string, as it will create and discard the glyphs every time.
+    ///     Draws text to the screen with the given font.
+    ///     This method is SLOWER than the override that takes a Text object instead of a string, as it will create and discard
+    ///     the glyphs every time.
     /// </summary>
-    /// <param name="spriteBatch">This</param>
+    /// <param name="spriteBatch">The spritebatch</param>
     /// <param name="font">The Font to use when rendering the string</param>
-    /// <param name="text">The string to render.</param>
+    /// <param name="text">The string to render</param>
     /// <param name="position">Position at which to render the string</param>
     /// <param name="color">Color with which to render the string</param>
     public static void DrawString(this SpriteBatch spriteBatch, Font font, string text, Vector2 position, Color color)
     {
-        //spriteBatch.DrawString(font.CreateText(text), position, color);
-        font.Draw(spriteBatch, text, color, new Rectangle((int)position.X, (int)position.Y, 0, 0));
+        font.Draw(spriteBatch, text, color, new Rectangle((int) position.X, (int) position.Y, 0, 0));
     }
 
     /// <summary>
-    /// Draw text to SpriteBatch with the given Font.
+    ///     Draws text to the screen with the given font.
+    ///     This method is SLOWER than the override that takes a Text object instead of a string, as it will create and discard
+    ///     the glyphs every time.
     /// </summary>
-    /// <param name="spriteBatch">This</param>
+    /// <param name="spriteBatch">The spritebatch</param>
     /// <param name="font">The Font to use when rendering the string</param>
+    /// <param name="text">The string to render.</param>
+    /// <param name="position">Position at which to render the string</param>
+    /// <param name="color">Color with which to render the string</param>
+    public static void DrawString(this SpriteBatch spriteBatch, Font font, StringBuilder text, Vector2 position, Color color)
+    {
+        font.Draw(spriteBatch, text.ToString(), color, new Rectangle((int) position.X, (int) position.Y, 0, 0));
+    }
+
+    /// <summary>
+    ///     Draw text to the screen with the given Font.
+    /// </summary>
+    /// <param name="spriteBatch">The spritebatch</param>
     /// <param name="text">The text to render.</param>
     /// <param name="position">Position at which to render the text</param>
     /// <param name="color">Color with which to render the text</param>
@@ -33,4 +48,5 @@ public static class DrawStringExtension
     {
         text.Draw(spriteBatch, position, color);
     }
+
 }

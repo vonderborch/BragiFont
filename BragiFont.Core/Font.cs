@@ -1,98 +1,238 @@
-﻿using BragiFont.Internal;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BragiFont.Internal;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SharpFont;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BragiFont
 {
+    /// <summary>
+    /// A Font that can be used to draw text to the screen
+    /// </summary>
+    /// <seealso cref="System.IEquatable{Font}" />
+    /// <seealso cref="System.IDisposable" />
     public abstract class Font : IEquatable<Font>, IDisposable
     {
-        protected readonly Tuple<string, int> _key;
+        /// <summary>
+        /// The font face
+        /// </summary>
+        protected readonly Face FontFace;
 
-        protected readonly string _fontFamily;
-        protected readonly Face _face;
-        protected readonly int _fontSize;
+        /// <summary>
+        /// The font family
+        /// </summary>
+        protected readonly string FontFamilyName;
 
-        internal Dictionary<char, Character> _characters;
+        /// <summary>
+        /// The font size
+        /// </summary>
+        protected readonly int FontFaceSize;
 
-        private List<GlyphCache> _glyphCaches;
+        /// <summary>
+        /// Caches of glyphs
+        /// </summary>
+        private readonly List<GlyphCache> _glyphCaches;
 
-        public Font(Tuple<string, int> key, Face face, int fontSize)
+        /// <summary>
+        /// The key for this Font
+        /// </summary>
+        protected readonly Tuple<string, int> KeyTuple;
+
+        /// <summary>
+        /// The characters that we currently have generated glyphs for
+        /// </summary>
+        internal Dictionary<char, Character> Characters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Font"/> class.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="face">The font face.</param>
+        /// <param name="fontSize">Size of the font.</param>
+        protected Font(Tuple<string, int> key, Face face, int fontSize)
         {
-            _key = key;
-            _fontFamily = face.FamilyName;
-            _fontSize = fontSize;
-            _face = face;
-            _characters = new Dictionary<char, Character>();
+            KeyTuple = key;
+            FontFamilyName = face.FamilyName;
+            FontFaceSize = fontSize;
+            FontFace = face;
+            Characters = new Dictionary<char, Character>();
             _glyphCaches = new List<GlyphCache>();
 
-            GlyphHeight = (int)face.Size.Metrics.Height.Ceiling();
+            GlyphHeight = face.Size.Metrics.Height.Ceiling();
         }
 
-        public Tuple<string, int> Key => _key;
+        /// <summary>
+        /// Gets the key for this Font.
+        /// </summary>
+        /// <value>
+        /// The key.
+        /// </value>
+        public Tuple<string, int> Key => KeyTuple;
 
-        public string FontFamily => _fontFamily;
+        /// <summary>
+        /// Gets the font family.
+        /// </summary>
+        /// <value>
+        /// The font family.
+        /// </value>
+        public string FontFamily => FontFamilyName;
 
-        public Face Face => _face;
+        /// <summary>
+        /// Gets the font face.
+        /// </summary>
+        /// <value>
+        /// The face.
+        /// </value>
+        public Face Face => FontFace;
 
-        public int FontSize => _fontSize;
+        /// <summary>
+        /// Gets the size of the font.
+        /// </summary>
+        /// <value>
+        /// The size of the font.
+        /// </value>
+        public int FontSize => FontFaceSize;
 
-        public LoadFlags LoadFlags { get; set; } = Constants.Settings.DEFAULT_LOAD_FLAGS;
+        /// <summary>
+        /// Gets or sets the load flags.
+        /// </summary>
+        /// <value>
+        /// The load flags.
+        /// </value>
+        public LoadFlags LoadFlags { get; set; } = Constants.Settings.DefaultLoadFlags;
 
-        public LoadTarget LoadTarget { get; set; } = Constants.Settings.DEFAULT_LOAD_TARGET;
+        /// <summary>
+        /// Gets or sets the load target.
+        /// </summary>
+        /// <value>
+        /// The load target.
+        /// </value>
+        public LoadTarget LoadTarget { get; set; } = Constants.Settings.DefaultLoadTarget;
 
-        public RenderMode RenderMode { get; set; } = Constants.Settings.DEFAULT_RENDER_MODE;
+        /// <summary>
+        /// Gets or sets the render mode.
+        /// </summary>
+        /// <value>
+        /// The render mode.
+        /// </value>
+        public RenderMode RenderMode { get; set; } = Constants.Settings.DefaultRenderMode;
 
-        public int SpacesInTab { get; set; } = Constants.Settings.DEFAULT_SPACES_IN_TAB;
+        /// <summary>
+        /// Gets or sets the number of spaces we'll use when a tab is requested.
+        /// </summary>
+        /// <value>
+        /// The spaces in tab.
+        /// </value>
+        public int SpacesInTab { get; set; } = Constants.Settings.DefaultSpacesInTab;
 
-        public int GlyphHeight { get; private set; }
+        /// <summary>
+        /// Gets the height of glyphs in the Font.
+        /// </summary>
+        /// <value>
+        /// The height of the glyph.
+        /// </value>
+        public int GlyphHeight { get; }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
-            _face.Dispose();
+            FontFace.Dispose();
             Bragi.Core.RemoveFont(Key);
         }
 
-        public void DisposeFinal()
-        {
-            _face.Dispose();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj == null
-                ? false
-                : (obj is Font || obj is FontImplementation) && Equals((Font)obj);
-        }
-
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+        /// </returns>
         public bool Equals(Font other)
         {
-            return Equals(this.Key, other.Key);
+            return !(other is null) && Equals(Key, other.Key);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void DisposeFinal()
+        {
+            FontFace.Dispose();
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            return obj != null && (obj is Font || obj is FontImplementation) && Equals((Font) obj);
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
-            return (_fontFamily.GetHashCode() * 397) ^ _fontSize.GetHashCode();
+            return (FontFamilyName.GetHashCode() * 397) ^ FontFaceSize.GetHashCode();
         }
 
+        /// <summary>
+        /// Converts the Font to a string to provide debug information on the font.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
-            return $"font: [{_fontFamily}], size: [{_fontSize}]";
+            return $"font: [{FontFamilyName}], size: [{FontFaceSize}]";
         }
 
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
         public static bool operator ==(Font left, Font right)
         {
-            return left.Equals(right);
+            return !(left is null) && left.Equals(right);
         }
 
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
         public static bool operator !=(Font left, Font right)
         {
-            return !left.Equals(right);
+            return !(left is null) && !left.Equals(right);
         }
 
+        /// <summary>
+        /// Draws the text to the screen at the specified position and with the specified color.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="boundaries">The boundaries.</param>
         public void Draw(SpriteBatch spriteBatch, string text, Color color, Rectangle boundaries)
         {
             var warpLine = boundaries.Width > 0;
@@ -114,29 +254,32 @@ namespace BragiFont
                 {
                     offsetX = 0;
                     underrun = 0;
-                    offsetY += cachedCharacter.Boundary.Height;
+                    offsetY += cachedCharacter.AdvanceY;
                 }
+
                 if (text[i] == '\r' || text[i] == '\n')
                 {
                     continue;
                 }
-                if (offsetY > height || (!warpLine && offsetX > width))
+
+                if (offsetY > height || !warpLine && offsetX > width)
                 {
                     return;
                 }
 
                 // calculate underrun
-                underrun += -(cachedCharacter.BearingX);
+                underrun += -cachedCharacter.BearingX;
                 if (offsetX == 0)
                 {
                     offsetX += underrun;
                 }
+
                 if (underrun <= 0)
                 {
                     underrun = 0;
                 }
 
-                spriteBatch.Draw(cachedCharacter.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY), cachedCharacter.Boundary, color);
+                spriteBatch.Draw(cachedCharacter.Texture.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY), cachedCharacter.Boundary, color);
                 offsetX += cachedCharacter.Boundary.Width;
 
                 // calculate kerning
@@ -146,7 +289,7 @@ namespace BragiFont
                     if (TryGetCharacter(nextCharacter, out var nextCachedCharacter))
                     {
                         var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
-                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KERNING_SANITY_MULTIPLIER;
+                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
                         if (kerning <= maxBounds && kerning >= -maxBounds)
                         {
                             offsetX += kerning;
@@ -156,11 +299,26 @@ namespace BragiFont
             }
         }
 
+        /// <summary>
+        /// Pre-generates a list of Glyphs to draw to the string.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>A Text object representing the Glyphs we need to draw to the screen for the input string.</returns>
+        public Text MakeText(StringBuilder text)
+        {
+            return MakeText(text.ToString());
+        }
+
+        /// <summary>
+        /// Pre-generates a list of Glyphs to draw to the string.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>A Text object representing the Glyphs we need to draw to the screen for the input string.</returns>
         public Text MakeText(string text)
         {
             var finalSize = new Vector2(0, 0);
 
-            var textResult = new TextImplementation(text);
+            var textResult = new TextImplementation(text, this);
 
             var offsetX = 0;
             var offsetY = 0;
@@ -181,23 +339,25 @@ namespace BragiFont
                     finalSize.X = Math.Max(offsetX, finalSize.X);
                     offsetX = 0;
                     underrun = 0;
-                    offsetY += cachedCharacter.Boundary.Height;
+                    offsetY += cachedCharacter.AdvanceY;
                     if (i != finalCharacterIndex)
                     {
-                        finalSize.Y += cachedCharacter.Boundary.Height;
+                        finalSize.Y += cachedCharacter.AdvanceY;
                     }
                 }
+
                 if (text[i] == '\r' || text[i] == '\n')
                 {
                     continue;
                 }
 
                 // calculate underrun
-                underrun += -(cachedCharacter.BearingX);
+                underrun += -cachedCharacter.BearingX;
                 if (offsetX == 0)
                 {
                     offsetX += underrun;
                 }
+
                 if (underrun <= 0)
                 {
                     underrun = 0;
@@ -213,24 +373,46 @@ namespace BragiFont
                     if (TryGetCharacter(nextCharacter, out var nextCachedCharacter))
                     {
                         var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
-                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KERNING_SANITY_MULTIPLIER;
+                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
                         if (kerning <= maxBounds && kerning >= -maxBounds)
                         {
                             offsetX += kerning;
                         }
                     }
                 }
+                else
+                {
+                    finalSize.X = Math.Max(offsetX, finalSize.X);
+                }
             }
+
+            textResult.Width = finalSize.X;
+            textResult.Height = finalSize.Y;
+            textResult.Size = new Vector2(textResult.Width, textResult.Height);
 
             return textResult;
         }
 
+        /// <summary>
+        /// Measures the text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The size of the text.</returns>
+        public Vector2 MeasureText(StringBuilder text)
+        {
+            return MeasureText(text.ToString());
+        }
+
+        /// <summary>
+        /// Measures the text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The size of the text.</returns>
         public Vector2 MeasureText(string text)
         {
             var finalSize = new Vector2(0, 0);
 
             var offsetX = 0;
-            var offsetY = 0;
 
             var underrun = 0;
             var finalCharacterIndex = text.Length - 1;
@@ -248,23 +430,24 @@ namespace BragiFont
                     finalSize.X = Math.Max(offsetX, finalSize.X);
                     offsetX = 0;
                     underrun = 0;
-                    offsetY += cachedCharacter.Boundary.Height;
                     if (i != finalCharacterIndex)
                     {
-                        finalSize.Y += cachedCharacter.Boundary.Height;
+                        finalSize.Y += cachedCharacter.AdvanceY;
                     }
                 }
+
                 if (text[i] == '\r' || text[i] == '\n')
                 {
                     continue;
                 }
 
                 // calculate underrun
-                underrun += -(cachedCharacter.BearingX);
+                underrun += -cachedCharacter.BearingX;
                 if (offsetX == 0)
                 {
                     offsetX += underrun;
                 }
+
                 if (underrun <= 0)
                 {
                     underrun = 0;
@@ -279,7 +462,7 @@ namespace BragiFont
                     if (TryGetCharacter(nextCharacter, out var nextCachedCharacter))
                     {
                         var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
-                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KERNING_SANITY_MULTIPLIER;
+                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
                         if (kerning <= maxBounds && kerning >= -maxBounds)
                         {
                             offsetX += kerning;
@@ -291,26 +474,64 @@ namespace BragiFont
             return finalSize;
         }
 
+        /// <summary>
+        /// Pre-generates the characters.
+        /// </summary>
+        /// <param name="charactersToPregenerate">The characters to pre-generate.</param>
+        public void PregenerateCharacters(char[] charactersToPregenerate)
+        {
+            if (charactersToPregenerate == null)
+            {
+                charactersToPregenerate = Constants.Settings.DefaultCharacterList;
+            }
+
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var i = 0; i < charactersToPregenerate.Length; i++)
+            {
+                GenerateCharacter(charactersToPregenerate[i]);
+            }
+        }
+
+        /// <summary>
+        /// Gets the kerning between two characters.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>The kerning between the characters.</returns>
         private int GetKerning(Character left, Character right)
         {
             if (left.Kerning.TryGetValue(right.Char, out var kerning))
             {
-                left.Kerning[right.Char] = kerning = (int)_face.GetKerning((uint)left.Index, (uint)right.Index, KerningMode.Default).X;
+                left.Kerning[right.Char] = kerning =
+                    (int)FontFace.GetKerning((uint) left.Index, (uint) right.Index, KerningMode.Default).X;
             }
 
             return kerning;
         }
 
+        /// <summary>
+        /// Tries to get a Character object representing a requested char, and if we haven't generated it already, we generate the character.
+        /// </summary>
+        /// <param name="character">The character we want to fetch.</param>
+        /// <param name="bragiCharacter">The character object representing the char.</param>
+        /// <returns>Whether we were able to fetch the character.</returns>
         private bool TryGetCharacter(char character, out Character bragiCharacter)
         {
-            if (!_characters.TryGetValue(character, out bragiCharacter))
+            if (!Characters.TryGetValue(character, out bragiCharacter))
             {
                 bragiCharacter = GenerateCharacter(character);
-                _characters.Add(character, bragiCharacter);
+                Characters.Add(character, bragiCharacter);
             }
+
             return true;
         }
 
+        /// <summary>
+        /// Generates the character.
+        /// </summary>
+        /// <param name="character">The character.</param>
+        /// <returns>The generated character</returns>
+        /// <exception cref="Exception">Could not generate character [{character}]!</exception>
         private Character GenerateCharacter(char character)
         {
             var glyphCache = _glyphCaches.FirstOrDefault(c => !c.Full);
@@ -328,10 +549,12 @@ namespace BragiFont
                 {
                     throw new Exception($"Could not generate character [{character}]!");
                 }
+
                 _glyphCaches.Add(glyphCache);
             }
 
             return cachedCharacter;
         }
+
     }
 }

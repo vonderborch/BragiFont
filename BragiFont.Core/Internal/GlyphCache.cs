@@ -1,30 +1,65 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SharpFont;
-using System;
-using System.Collections.Generic;
 
 namespace BragiFont.Internal
 {
+    /// <summary>
+    /// A cache of Glyphs.
+    /// </summary>
     internal class GlyphCache
     {
-        private Font _font;
-
-        public Texture2D Texture;
-
+        /// <summary>
+        /// The width of the GlyphCache.
+        /// </summary>
         public static int Width = Constants.DEFAULT_REACH_TEXTURE_SIZE;
 
+        /// <summary>
+        /// The height of the GlyphCache.
+        /// </summary>
         public static int Height = Constants.DEFAULT_HIDEF_TEXTURE_SIZE;
 
-        private int CurrentX = 0;
-        private int CurrentY = 0;
+        /// <summary>
+        /// The buffer.
+        /// </summary>
+        private static ushort[] _buffer;
 
-        public bool Full = false;
+        /// <summary>
+        /// The font the GlyphCache is associated with.
+        /// </summary>
+        private readonly Font _font;
 
-        private List<char> characters = new List<char>();
+        /// <summary>
+        /// The characters that are part of this GlyphCache.
+        /// </summary>
+        private readonly List<char> _characters = new List<char>();
 
-        private static ushort[] buffer;
+        /// <summary>
+        /// The current x position in the GlyphCache.
+        /// </summary>
+        private int _currentX;
 
+        /// <summary>
+        /// The current y position in the GlyphCache.
+        /// </summary>
+        private int _currentY;
+
+        /// <summary>
+        /// Whether the Cache is full (true) or not (false).
+        /// </summary>
+        public bool Full;
+
+        /// <summary>
+        /// The texture the characters are cached on.
+        /// </summary>
+        public Texture2D Texture;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlyphCache"/> class.
+        /// </summary>
+        /// <param name="font">The font.</param>
         public GlyphCache(Font font)
         {
             _font = font;
@@ -43,22 +78,29 @@ namespace BragiFont.Internal
             Texture = new Texture2D(Bragi.Core.GraphicsDevice, Width, Height, false, Constants.DEFAULT_CACHE_SURFACE_FORMAT);
         }
 
+        /// <summary>
+        /// Adds the character to cache.
+        /// </summary>
+        /// <param name="character">The character.</param>
+        /// <param name="characterCache">The character cache.</param>
+        /// <returns>Whether we could add the character to the cache or not.</returns>
         public bool AddCharacterToCache(char character, out Character characterCache)
         {
             var index = _font.Face.GetCharIndex(character);
             _font.Face.LoadGlyph(index, _font.LoadFlags, _font.LoadTarget);
             using (var glyph = _font.Face.Glyph.GetGlyph())
             {
-                glyph.ToBitmap(_font.RenderMode, Constants.GLYPH_BITMAP_ORIGIN, true);
+                glyph.ToBitmap(_font.RenderMode, Constants.GlyphBitmapOrigin, true);
 
                 using (var bitmap = glyph.ToBitmapGlyph())
                 {
-                    if (CurrentX + glyph.Advance.X.Ceiling() >= Width)
+                    if (_currentX + glyph.Advance.X.Ceiling() >= Width)
                     {
-                        CurrentY += _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight;
-                        CurrentX = 0;
+                        _currentY += _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight;
+                        _currentX = 0;
                     }
-                    if (CurrentY >= Height - _font.GlyphHeight)
+
+                    if (_currentY >= Height - _font.GlyphHeight)
                     {
                         Full = true;
                         characterCache = null;
@@ -72,20 +114,27 @@ namespace BragiFont.Internal
             return true;
         }
 
+        /// <summary>
+        /// Adds the character.
+        /// </summary>
+        /// <param name="character">The character.</param>
+        /// <param name="glyph">The glyph.</param>
+        /// <param name="bitmapGlyph">The bitmap glyph.</param>
+        /// <returns>The character that we added to the cache.</returns>
         private Character AddCharacter(char character, Glyph glyph, BitmapGlyph bitmapGlyph)
         {
             if (!(bitmapGlyph.Bitmap.Width == 0 || bitmapGlyph.Bitmap.Rows == 0))
             {
                 var cBox = glyph.GetCBox(GlyphBBoxMode.Pixels);
                 var bearingY = _font.Face.Glyph.Metrics.VerticalAdvance.Ceiling();
-                var rectangle = new Rectangle(CurrentX + cBox.Left, CurrentY + (bearingY - cBox.Top), bitmapGlyph.Bitmap.Width, bitmapGlyph.Bitmap.Rows);
+                var rectangle = new Rectangle(_currentX + cBox.Left, _currentY + (bearingY - cBox.Top), bitmapGlyph.Bitmap.Width, bitmapGlyph.Bitmap.Rows);
                 var dataLength = bitmapGlyph.Bitmap.BufferData.Length;
-                buffer = new ushort[dataLength];
+                _buffer = new ushort[dataLength];
 
-                for (var i = 0; i < buffer.Length; i++)
+                for (var i = 0; i < _buffer.Length; i++)
                 {
                     var c = bitmapGlyph.Bitmap.BufferData[i] >> 4;
-                    buffer[i] = (ushort)((c << 4) | (c << 8) | (c << 12) | c);
+                    _buffer[i] = (ushort) ((c << 4) | (c << 8) | (c << 12) | c);
                 }
 
                 if (character < 255 && character != '_')
@@ -108,10 +157,10 @@ namespace BragiFont.Internal
                     rectangle.Offset(Math.Abs(rectangle.Width - glyph.Advance.X.Ceiling()) / 2, 0);
                 }
 
-                Texture.SetData(0, rectangle, buffer, 0, dataLength);
+                Texture.SetData(0, rectangle, _buffer, 0, dataLength);
             }
 
-            characters.Add(character);
+            _characters.Add(character);
 
             var advanceX = glyph.Advance.X.Ceiling();
             if (character == '\t')
@@ -119,20 +168,19 @@ namespace BragiFont.Internal
                 advanceX = Math.Abs(_font.Face.Size.Metrics.NominalWidth * _font.SpacesInTab);
             }
 
-            var finalCharacter = new Character()
+            var finalCharacter = new Character
             {
-                Boundary = new Rectangle(CurrentX, CurrentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight),
-                Texture = this.Texture,
-                Index = characters.Count - 1,
-                PreCharacter = characters.Count > 1 ? characters[characters.Count - 2] : (char?)null,
+                Boundary = new Rectangle(_currentX, _currentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight),
+                Texture = this,
+                Index = _characters.Count - 1,
                 Char = character,
                 AdvanceX = glyph.Advance.X.Ceiling(),
                 BearingX = _font.Face.Glyph.Metrics.HorizontalBearingX.Ceiling(),
+                AdvanceY = _font.Face.Size.Metrics.NominalHeight
             };
-            CurrentX += advanceX + _font.Face.Size.Metrics.NominalWidth;
-            return finalCharacter;
 
-            //throw new Exception("Failed to add character to the cache!");
+            _currentX += advanceX + _font.Face.Size.Metrics.NominalWidth;
+            return finalCharacter;
         }
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BragiFont.Monogame</name>
+    </assembly>
+    <members>
+        <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Font,System.String,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws text to the screen with the given font.
+            This method is SLOWER than the override that takes a BragiText instead of a string, as it will create and discard the glyphs every time.
+            </summary>
+            <param name="spriteBatch">The spritebatch</param>
+            <param name="font">The Font to use when rendering the string</param>
+            <param name="text">The string to render</param>
+            <param name="position">Position at which to render the string</param>
+            <param name="color">Color with which to render the string</param>
+        </member>
+        <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Font,System.Text.StringBuilder,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws text to the screen with the given font.
+            This method is SLOWER than the override that takes a BragiText instead of a string, as it will create and discard the glyphs every time.
+            </summary>
+            <param name="spriteBatch">The spritebatch</param>
+            <param name="font">The Font to use when rendering the string</param>
+            <param name="text">The string to render.</param>
+            <param name="position">Position at which to render the string</param>
+            <param name="color">Color with which to render the string</param>
+        </member>
+        <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Text,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draw text to SpriteBatch with the given Font.
+            </summary>
+            <param name="spriteBatch">The spritebatch</param>
+            <param name="font">The Font to use when rendering the string</param>
+            <param name="text">The text to render.</param>
+            <param name="position">Position at which to render the text</param>
+            <param name="color">Color with which to render the text</param>
+        </member>
+    </members>
+</doc>
