@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.Core", "BragiFont.Core\BragiFont.Core.csproj", "{C06E2422-7D41-4457-95E1-107C8396AB86}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.FNA", "BragiFont.FNA\BragiFont.FNA.csproj", "{F2A21AA1-E180-44F3-8E15-677F5BD484CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.Monogame", "BragiFont.Monogame\BragiFont.Monogame.csproj", "{B1511795-2A2D-4ED3-B0F1-CFF4F516E4B9}"
@@ -21,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.DevEnv", "BragiFo
 		{B1511795-2A2D-4ED3-B0F1-CFF4F516E4B9} = {B1511795-2A2D-4ED3-B0F1-CFF4F516E4B9}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.Core.OLD", "BragiFont.Core.OLD\BragiFont.Core.OLD.csproj", "{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BragiFont.Core", "BragiFont.Core\BragiFont.Core.csproj", "{9CFC824B-35B5-4833-AD68-E65550852C0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,16 +33,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Debug|x64.Build.0 = Debug|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Debug|x86.Build.0 = Debug|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Release|x64.ActiveCfg = Release|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Release|x64.Build.0 = Release|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Release|x86.ActiveCfg = Release|Any CPU
-		{C06E2422-7D41-4457-95E1-107C8396AB86}.Release|x86.Build.0 = Release|Any CPU
 		{F2A21AA1-E180-44F3-8E15-677F5BD484CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2A21AA1-E180-44F3-8E15-677F5BD484CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2A21AA1-E180-44F3-8E15-677F5BD484CF}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -77,6 +69,30 @@ Global
 		{1819E7CB-9F21-408E-A8F5-681A607ED8DC}.Release|x64.Build.0 = Release|x64
 		{1819E7CB-9F21-408E-A8F5-681A607ED8DC}.Release|x86.ActiveCfg = Release|x86
 		{1819E7CB-9F21-408E-A8F5-681A607ED8DC}.Release|x86.Build.0 = Release|x86
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|x64.Build.0 = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Debug|x86.Build.0 = Debug|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|x64.ActiveCfg = Release|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|x64.Build.0 = Release|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|x86.ActiveCfg = Release|Any CPU
+		{43029D6A-9B5E-48A4-8DD6-03CCDE3D9605}.Release|x86.Build.0 = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|x64.Build.0 = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{9CFC824B-35B5-4833-AD68-E65550852C0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

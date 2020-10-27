@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace BragiFont.Internal
 {
@@ -61,18 +60,6 @@ namespace BragiFont.Internal
             }
 
             return array;
-        }
-
-        public static byte[] ReadStream(Stream stream)
-        {
-            byte[] output;
-            using (var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);
-                output = ms.ToArray();
-            }
-
-            return output;
         }
     }
 }

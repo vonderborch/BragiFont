@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using BragiFont.Internal;
 using Microsoft.Xna.Framework.Graphics;
 using SharpFont;
@@ -21,7 +20,7 @@ namespace BragiFont
         /// <summary>
         /// The fonts we haved cached.
         /// </summary>
-        private static readonly Dictionary<string, Typeface> Typefaces;
+        private static readonly Dictionary<Tuple<string, int>, Font> Fonts;
 
         /// <summary>
         /// Initializes the <see cref="Bragi"/> class.
@@ -29,7 +28,7 @@ namespace BragiFont
         static Bragi()
         {
             Library = new Library();
-            Typefaces = new Dictionary<string, Typeface>();
+            Fonts = new Dictionary<Tuple<string, int>, Font>();
         }
 
         /// <summary>
@@ -45,8 +44,6 @@ namespace BragiFont
         /// </value>
         public static Bragi Core { get; } = new Bragi();
 
-        internal Library BragiLibrary => Library;
-
         /// <summary>
         /// Gets the graphics device.
         /// </summary>
@@ -60,7 +57,7 @@ namespace BragiFont
         /// </summary>
         public void Dispose()
         {
-            foreach (var font in Typefaces.Values)
+            foreach (var font in Fonts.Values)
             {
                 font.DisposeFinal();
             }
@@ -87,19 +84,7 @@ namespace BragiFont
         /// <param name="charactersToPregenerate">The characters to pregenerate.</param>
         /// <returns>The Font that matches the specified parameters.</returns>
         /// <exception cref="Exception">GraphicsDevice is not initialized! Please either initialize Bragi.Core or provide the GraphicsDevice when getting a new font.</exception>
-        public Typeface GetTypeface(string path, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
-        {
-            return GetTypeface(path, File.ReadAllBytes(path), graphicsDevice, preGenerateCharacters, charactersToPregenerate);
-        }
-
-        public Typeface GetTypeface(string name, Stream fileStream, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
-        {
-            var buffer = Helpers.ReadStream(fileStream);
-
-            return GetTypeface(name, buffer, graphicsDevice, preGenerateCharacters, charactersToPregenerate);
-        }
-
-        public Typeface GetTypeface(string name, byte[] fileData, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
+        public Font GetFont(string path, int size, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
         {
             if (graphicsDevice == null && GraphicsDevice == null)
             {
@@ -111,23 +96,32 @@ namespace BragiFont
                 GraphicsDevice = graphicsDevice;
             }
 
-            if (!Typefaces.TryGetValue(name, out var typeface))
+            var key = new Tuple<string, int>(path, size);
+            if (!Fonts.TryGetValue(key, out var font))
             {
-                typeface = new TypefaceImplementation(name, fileData, preGenerateCharacters, charactersToPregenerate);
-                
-                Typefaces.Add(name, typeface);
+                var face = Library.NewFace(path, 0);
+                var fontSize = Fixed26Dot6.FromInt32(size);
+                face.SetCharSize(fontSize, fontSize, 0, 0);
+                face.SetTransform();
+                font = new FontImplementation(key, face, size);
+                if (preGenerateCharacters)
+                {
+                    font.PregenerateCharacters(charactersToPregenerate);
+                }
+
+                Fonts.Add(key, font);
             }
 
-            return typeface;
+            return font;
         }
 
         /// <summary>
         /// Removes a font from the system.
         /// </summary>
         /// <param name="key">The key for the font we want to remove.</param>
-        internal void RemoveTypeface(string name)
+        internal void RemoveFont(Tuple<string, int> key)
         {
-            Typefaces.Remove(name);
+            Fonts.Remove(key);
         }
     }
 }
