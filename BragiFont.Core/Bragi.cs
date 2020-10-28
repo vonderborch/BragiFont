@@ -77,6 +77,25 @@ namespace BragiFont
             GraphicsDevice = graphicsDevice;
         }
 
+        public Font GetFont(string path, int size, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null, bool? storeTypefaceFileData = null)
+        {
+            var typeface = GetTypefaceInternal(path, File.ReadAllBytes(path), graphicsDevice, preGenerateCharacters, charactersToPregenerate, storeTypefaceFileData);
+            return typeface.GetFont(size, preGenerateCharacters, charactersToPregenerate);
+        }
+
+        public Font GetFont(string name, Stream fileStream, int size, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
+        {
+            var buffer = Helpers.ReadStream(fileStream);
+            var typeface = GetTypefaceInternal(name, buffer, graphicsDevice, preGenerateCharacters, charactersToPregenerate, true);
+            return typeface.GetFont(size, preGenerateCharacters, charactersToPregenerate);
+        }
+
+        public Font GetFont(string name, byte[] fileData, int size, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
+        {
+            var typeface = GetTypefaceInternal(name, fileData, graphicsDevice, preGenerateCharacters, charactersToPregenerate, true);
+            return typeface.GetFont(size, preGenerateCharacters, charactersToPregenerate);
+        }
+
         /// <summary>
         /// Gets or loads the specified font with the specified size.
         /// </summary>
@@ -87,19 +106,23 @@ namespace BragiFont
         /// <param name="charactersToPregenerate">The characters to pregenerate.</param>
         /// <returns>The Font that matches the specified parameters.</returns>
         /// <exception cref="Exception">GraphicsDevice is not initialized! Please either initialize Bragi.Core or provide the GraphicsDevice when getting a new font.</exception>
-        public Typeface GetTypeface(string path, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
+        public Typeface GetTypeface(string path, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null, bool? storeTypefaceFileData = null)
         {
-            return GetTypeface(path, File.ReadAllBytes(path), graphicsDevice, preGenerateCharacters, charactersToPregenerate);
+            return GetTypefaceInternal(path, File.ReadAllBytes(path), graphicsDevice, preGenerateCharacters, charactersToPregenerate, storeTypefaceFileData);
         }
 
         public Typeface GetTypeface(string name, Stream fileStream, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
         {
             var buffer = Helpers.ReadStream(fileStream);
-
-            return GetTypeface(name, buffer, graphicsDevice, preGenerateCharacters, charactersToPregenerate);
+            return GetTypefaceInternal(name, buffer, graphicsDevice, preGenerateCharacters, charactersToPregenerate, true);
         }
 
         public Typeface GetTypeface(string name, byte[] fileData, GraphicsDevice graphicsDevice = null, bool preGenerateCharacters = false, char[] charactersToPregenerate = null)
+        {
+            return GetTypefaceInternal(name, fileData, graphicsDevice, preGenerateCharacters, charactersToPregenerate, true);
+        }
+
+        private Typeface GetTypefaceInternal(string name, byte[] fileData, GraphicsDevice graphicsDevice, bool preGenerateCharacters, char[] charactersToPregenerate, bool? storeTypefaceFileData)
         {
             if (graphicsDevice == null && GraphicsDevice == null)
             {
@@ -111,23 +134,41 @@ namespace BragiFont
                 GraphicsDevice = graphicsDevice;
             }
 
+            if (storeTypefaceFileData == null)
+            {
+                storeTypefaceFileData = Constants.Settings.StoreFontFileData;
+            }
+
             if (!Typefaces.TryGetValue(name, out var typeface))
             {
-                typeface = new TypefaceImplementation(name, fileData, preGenerateCharacters, charactersToPregenerate);
-                
+                typeface = new TypefaceImplementation(name, fileData, preGenerateCharacters, charactersToPregenerate, (bool)storeTypefaceFileData);
+
                 Typefaces.Add(name, typeface);
             }
 
             return typeface;
         }
 
+        internal Typeface GetStoredTypeface(string name)
+        {
+            return Typefaces[name];
+        }
+
         /// <summary>
         /// Removes a font from the system.
         /// </summary>
         /// <param name="key">The key for the font we want to remove.</param>
-        internal void RemoveTypeface(string name)
+        internal void RemoveTypeface(string name, bool dispose = true)
         {
-            Typefaces.Remove(name);
+            if (Typefaces.ContainsKey(name))
+            {
+                if (dispose)
+                {
+                    Typefaces[name].DisposeFinal();
+                }
+
+                Typefaces.Remove(name);
+            }
         }
     }
 }

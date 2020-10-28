@@ -23,13 +23,15 @@
     <Compile Include="..\BragiFont.Core\Constants.cs" Link="Constants.cs" />
     <Compile Include="..\BragiFont.Core\DrawStringExtensions.cs" Link="DrawStringExtensions.cs" />
     <Compile Include="..\BragiFont.Core\Font.cs" Link="Font.cs" />
-    <Compile Include="..\BragiFont.Core\Internal\Character.cs" Link="Internal\Character.cs" />
     <Compile Include="..\BragiFont.Core\Internal\FontImplementation.cs" Link="Internal\FontImplementation.cs" />
+    <Compile Include="..\BragiFont.Core\Internal\Glyph.cs" Link="Internal\Glyph.cs" />
     <Compile Include="..\BragiFont.Core\Internal\GlyphCache.cs" Link="Internal\GlyphCache.cs" />
     <Compile Include="..\BragiFont.Core\Internal\Helpers.cs" Link="Internal\Helpers.cs" />
     <Compile Include="..\BragiFont.Core\Internal\TextCharacter.cs" Link="Internal\TextCharacter.cs" />
     <Compile Include="..\BragiFont.Core\Internal\TextImplementation.cs" Link="Internal\TextImplementation.cs" />
+    <Compile Include="..\BragiFont.Core\Internal\TypefaceImplementation.cs" Link="Internal\TypefaceImplementation.cs" />
     <Compile Include="..\BragiFont.Core\Text.cs" Link="Text.cs" />
+    <Compile Include="..\BragiFont.Core\Typeface.cs" Link="Typeface.cs" />
   </ItemGroup>
 
   <ItemGroup>

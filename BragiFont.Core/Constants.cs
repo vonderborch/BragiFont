@@ -96,5 +96,14 @@ namespace BragiFont
                 DefaultCharacters = new string(_defaultCharacterList);
             }
         }
+
+        /// <summary>
+        /// Whether to store the font's file data or not.
+        /// Increases memory usage, but allows the program to not have to re-read the font file when generating the same font at different sizes.
+        /// </summary>
+        /// <value>
+        /// The default character list.
+        /// </value>
+        public bool StoreFontFileData { get; set; } = true;
     }
 }

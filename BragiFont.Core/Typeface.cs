@@ -16,12 +16,21 @@ namespace BragiFont
     /// <seealso cref="System.IDisposable" />
     public abstract class Typeface : IEquatable<Typeface>, IDisposable
     {
-        private static readonly Dictionary<int, Font> Fonts;
+        private static readonly Dictionary<int, Font> Fonts = new Dictionary<int, Font>();
 
-        protected Typeface(string name, byte[] typefaceData, bool preGenerateCharacters, char[] charactersToPreGenerate)
+        protected Typeface(string name, byte[] typefaceData, bool preGenerateCharacters, char[] charactersToPreGenerate, bool storeTypefaceFileData)
         {
             Name = name;
-            TypefaceData = typefaceData;
+
+            if (storeTypefaceFileData)
+            {
+                TypefaceData = typefaceData;
+            }
+            else
+            {
+                TypefaceData = null;
+            }
+
             PreGenerateCharacters = preGenerateCharacters;
             CharactersToPreGenerate = charactersToPreGenerate;
         }
@@ -34,14 +43,39 @@ namespace BragiFont
 
         public char[] CharactersToPreGenerate { get; set; }
 
+        public void Dispose()
+        {
+            DisposeFinal();
+            Bragi.Core.RemoveTypeface(Name);
+        }
+
+        public void DisposeFinal()
+        {
+            for (var i = 0; i < Fonts.Count; i++)
+            {
+                Fonts[i].DisposeFinal();
+            }
+        }
+
+        public bool Equals(Typeface other)
+        {
+            return !(other is null) && Equals(Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            return obj != null && (obj is Typeface || obj is TypefaceImplementation) && Equals((Typeface)obj);
+        }
+
         public Font GetFont(int size, bool? preGenerateCharacters = null, char[] charactersToPreGenerate = null)
         {
             if (!Fonts.TryGetValue(size, out var font))
             {
-                var face = new Face(Bragi.Core.BragiLibrary, TypefaceData, 0);
+                var face = GetFace();
                 face.SetCharSize(size, size, 0, 0);
                 face.SetTransform();
-                font = new FontImplementation(size, face);
+                font = new FontImplementation(size, face, Name);
 
                 preGenerateCharacters = preGenerateCharacters ?? PreGenerateCharacters;
                 charactersToPreGenerate = charactersToPreGenerate ?? CharactersToPreGenerate;
@@ -59,6 +93,16 @@ namespace BragiFont
         public void RemoveFont(int size)
         {
             Fonts.Remove(size);
+        }
+
+        private Face GetFace()
+        {
+            if (TypefaceData == null)
+            {
+                return Bragi.Core.BragiLibrary.NewFace(Name, 0);
+            }
+
+            return new Face(Bragi.Core.BragiLibrary, TypefaceData, 0);
         }
     }
 }
