@@ -16,7 +16,7 @@ namespace BragiFont
     /// <seealso cref="System.IDisposable" />
     public abstract class Typeface : IEquatable<Typeface>, IDisposable
     {
-        private static readonly Dictionary<int, Font> Fonts = new Dictionary<int, Font>();
+        private Dictionary<int, Font> Fonts = new Dictionary<int, Font>();
 
         protected Typeface(string name, byte[] typefaceData, bool preGenerateCharacters, char[] charactersToPreGenerate, bool storeTypefaceFileData)
         {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
 using BragiFont.Internal;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,6 +91,76 @@ namespace BragiFont
             for (var i = 0; i < Characters.Count; i++)
             {
                 spriteBatch.Draw(Characters[i].Character.GlyphCache.Texture, Characters[i].Position + position, Characters[i].Character.Boundary, color);
+            }
+        }
+
+        /// <summary>
+        /// Draws the text to the string.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="position">The position to draw the text at.</param>
+        /// <param name="color">The color to draw the text with.</param>
+        /// <param name="rotation">A rotation of this string.</param>
+        /// <param name="origin">Center of the rotation. 0,0 by default.</param>
+        /// <param name="scale">A scaling of this string.</param>
+        /// <param name="effects">Modifications for drawing. Can be combined.</param>
+        /// <param name="layerDepth">A depth of the layer of this string.</param>
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth)
+        {
+            var flipAdjustment = Vector2.Zero;
+            var flippedVertically = effects.HasFlag(SpriteEffects.FlipVertically);
+            var flippedHorizontally = effects.HasFlag(SpriteEffects.FlipHorizontally);
+
+            // if we've flipped, handle adjusting our location as required
+            if (flippedVertically || flippedHorizontally)
+            {
+                Vector2 size = this.Size;
+
+                if (flippedHorizontally)
+                {
+                    origin.X *= -1;
+                    flipAdjustment.X -= size.X;
+                }
+
+                if (flippedVertically)
+                {
+                    origin.Y *= -1;
+                    flipAdjustment.Y = Font.GlyphHeight - size.Y;
+                }
+            }
+
+            // Handle our rotation as required
+            Matrix transformation = Matrix.Identity;
+            float cos, sin = 0;
+            var xScale = flippedHorizontally ? -scale.X : scale.X;
+            var yScale = flippedVertically ? -scale.Y : scale.Y;
+            var xOrigin = flipAdjustment.X - origin.X;
+            var yOrigin = flipAdjustment.Y - origin.Y;
+            if (rotation == 0)
+            {
+                transformation.M11 = xScale;
+                transformation.M22 = yScale;
+                transformation.M41 = xOrigin * transformation.M11 + position.X;
+                transformation.M42 = yOrigin * transformation.M22 + position.Y;
+            }
+            else
+            {
+                cos = (float) Math.Cos(rotation);
+                sin = (float) Math.Sin(rotation);
+                transformation.M11 = xScale * cos;
+                transformation.M12 = xScale * sin;
+                transformation.M21 = yScale * -sin;
+                transformation.M22 = yScale * cos;
+                transformation.M41 = (xOrigin * transformation.M11 + yOrigin * transformation.M21) + position.X;
+                transformation.M42 = (xOrigin * transformation.M12 + yOrigin * transformation.M22) + position.Y;
+            }
+
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var i = 0; i < Characters.Count; i++)
+            {
+                var characterPosition = Characters[i].Position + position;
+                Vector2.Transform(ref characterPosition, ref transformation, out characterPosition);
+                spriteBatch.Draw(Characters[i].Character.GlyphCache.Texture, characterPosition, Characters[i].Character.Boundary, color);
             }
         }
 

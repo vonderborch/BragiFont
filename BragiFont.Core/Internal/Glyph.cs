@@ -23,6 +23,11 @@ namespace BragiFont.Internal
         public int BearingX;
 
         /// <summary>
+        /// The Y bearing of the character.
+        /// </summary>
+        public int BearingY;
+
+        /// <summary>
         /// The position and boundaries of the Character on the GlyphCache's Texture.
         /// </summary>
         public Rectangle Boundary;
@@ -47,11 +52,23 @@ namespace BragiFont.Internal
         /// </summary>
         public GlyphCache GlyphCache;
 
-        public Glyph(int advanceX, int advanceY, int bearingX, Rectangle boundary, char character, int index, GlyphCache glyphCache)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Glyph"/> class.
+        /// </summary>
+        /// <param name="advanceX">The advance x.</param>
+        /// <param name="advanceY">The advance y.</param>
+        /// <param name="bearingX">The bearing x.</param>
+        /// <param name="bearingY">The bearing y.</param>
+        /// <param name="boundary">The boundary.</param>
+        /// <param name="character">The character.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="glyphCache">The glyph cache.</param>
+        public Glyph(int advanceX, int advanceY, int bearingX, int bearingY, Rectangle boundary, char character, int index, GlyphCache glyphCache)
         {
             AdvanceX = advanceX;
             AdvanceY = advanceY;
             BearingX = bearingX;
+            BearingY = bearingY;
             Boundary = boundary;
             Character = character;
             Index = index;

@@ -195,7 +195,7 @@ namespace BragiFont
                     underrun = 0;
                 }
 
-                spriteBatch.Draw(cachedCharacter.GlyphCache.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY), cachedCharacter.Boundary, color);
+                spriteBatch.Draw(cachedCharacter.GlyphCache.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY + cachedCharacter.BearingY), cachedCharacter.Boundary, color);
                 offsetX += cachedCharacter.Boundary.Width;
 
                 // calculate kerning

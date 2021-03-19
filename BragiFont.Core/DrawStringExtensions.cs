@@ -49,4 +49,21 @@ public static class DrawStringExtension
         text.Draw(spriteBatch, position, color);
     }
 
+    /// <summary>
+    ///     Draw text to the screen with the given Font.
+    /// </summary>
+    /// <param name="spriteBatch">The spritebatch</param>
+    /// <param name="text">The text to render.</param>
+    /// <param name="position">Position at which to render the text</param>
+    /// <param name="color">Color with which to render the text</param>
+    /// <param name="rotation">A rotation of this string.</param>
+    /// <param name="origin">Center of the rotation. 0,0 by default.</param>
+    /// <param name="scale">A scaling of this string.</param>
+    /// <param name="effects">Modifications for drawing. Can be combined.</param>
+    /// <param name="layerDepth">A depth of the layer of this string.</param>
+    public static void DrawString(this SpriteBatch spriteBatch, Text text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth)
+    {
+        text.Draw(spriteBatch, position, color, rotation, origin, scale, effects, layerDepth);
+    }
+
 }

@@ -168,7 +168,7 @@ namespace BragiFont.Internal
                 advanceX = Math.Abs(_font.Face.Size.Metrics.NominalWidth * _font.SpacesInTab);
             }
 
-            var finalCharacter = new Internal.Glyph(glyph.Advance.X.Ceiling(), _font.Face.Size.Metrics.NominalHeight, _font.Face.Glyph.Metrics.HorizontalBearingX.Ceiling(), new Rectangle(_currentX, _currentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight), character, _characters.Count - 1, this);
+            var finalCharacter = new Internal.Glyph(glyph.Advance.X.Ceiling(), _font.Face.Size.Metrics.NominalHeight, _font.Face.Glyph.Metrics.HorizontalBearingX.Ceiling(), _font.Face.Size.Metrics.Descender.Ceiling(), new Rectangle(_currentX, _currentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight), character, _characters.Count - 1, this);
 
             _currentX += advanceX + _font.Face.Size.Metrics.NominalWidth;
             return finalCharacter;
