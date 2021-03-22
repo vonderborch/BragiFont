@@ -82,19 +82,19 @@ namespace BragiFont.Internal
         /// Adds the character to cache.
         /// </summary>
         /// <param name="character">The character.</param>
-        /// <param name="glyph">The cached glyph.</param>
+        /// <param name="characterCache">The character cache.</param>
         /// <returns>Whether we could add the character to the cache or not.</returns>
-        public bool AddCharacterToCache(char character, out Glyph glyph)
+        public bool AddCharacterToCache(char character, out Character characterCache)
         {
             var index = _font.Face.GetCharIndex(character);
             _font.Face.LoadGlyph(index, _font.LoadFlags, _font.LoadTarget);
-            using (var faceGlyph = _font.Face.Glyph.GetGlyph())
+            using (var glyph = _font.Face.Glyph.GetGlyph())
             {
-                faceGlyph.ToBitmap(_font.RenderMode, Constants.GlyphBitmapOrigin, true);
+                glyph.ToBitmap(_font.RenderMode, Constants.GlyphBitmapOrigin, true);
 
-                using (var bitmap = faceGlyph.ToBitmapGlyph())
+                using (var bitmap = glyph.ToBitmapGlyph())
                 {
-                    if (_currentX + faceGlyph.Advance.X.Ceiling() >= Width)
+                    if (_currentX + glyph.Advance.X.Ceiling() >= Width)
                     {
                         _currentY += _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight;
                         _currentX = 0;
@@ -103,11 +103,11 @@ namespace BragiFont.Internal
                     if (_currentY >= Height - _font.GlyphHeight)
                     {
                         Full = true;
-                        glyph = null;
+                        characterCache = null;
                         return false;
                     }
 
-                    glyph = AddGlyph(character, faceGlyph, bitmap);
+                    characterCache = AddCharacter(character, glyph, bitmap);
                 }
             }
 
@@ -121,12 +121,12 @@ namespace BragiFont.Internal
         /// <param name="glyph">The glyph.</param>
         /// <param name="bitmapGlyph">The bitmap glyph.</param>
         /// <returns>The character that we added to the cache.</returns>
-        private Glyph AddGlyph(char character, SharpFont.Glyph glyph, BitmapGlyph bitmapGlyph)
+        private Character AddCharacter(char character, Glyph glyph, BitmapGlyph bitmapGlyph)
         {
             if (!(bitmapGlyph.Bitmap.Width == 0 || bitmapGlyph.Bitmap.Rows == 0))
             {
                 var cBox = glyph.GetCBox(GlyphBBoxMode.Pixels);
-                var bearingY = (int)_font.Face.Size.Metrics.NominalHeight;
+                var bearingY = _font.Face.Glyph.Metrics.VerticalAdvance.Ceiling();
                 var rectangle = new Rectangle(_currentX + cBox.Left, _currentY + (bearingY - cBox.Top), bitmapGlyph.Bitmap.Width, bitmapGlyph.Bitmap.Rows);
                 var dataLength = bitmapGlyph.Bitmap.BufferData.Length;
                 _buffer = new ushort[dataLength];
@@ -134,7 +134,7 @@ namespace BragiFont.Internal
                 for (var i = 0; i < _buffer.Length; i++)
                 {
                     var c = bitmapGlyph.Bitmap.BufferData[i] >> 4;
-                    _buffer[i] = (ushort)((c << 4) | (c << 8) | (c << 12) | c);
+                    _buffer[i] = (ushort) ((c << 4) | (c << 8) | (c << 12) | c);
                 }
 
                 if (character < 255 && character != '_')
@@ -168,7 +168,16 @@ namespace BragiFont.Internal
                 advanceX = Math.Abs(_font.Face.Size.Metrics.NominalWidth * _font.SpacesInTab);
             }
 
-            var finalCharacter = new Internal.Glyph(glyph.Advance.X.Ceiling(), _font.Face.Size.Metrics.NominalHeight, _font.Face.Glyph.Metrics.HorizontalBearingX.Ceiling(), _font.Face.Size.Metrics.Descender.Ceiling(), new Rectangle(_currentX, _currentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight), character, _characters.Count - 1, this);
+            var finalCharacter = new Character
+            {
+                Boundary = new Rectangle(_currentX, _currentY, advanceX, _font.GlyphHeight + _font.Face.Size.Metrics.NominalHeight),
+                Texture = this,
+                Index = _characters.Count - 1,
+                Char = character,
+                AdvanceX = glyph.Advance.X.Ceiling(),
+                BearingX = _font.Face.Glyph.Metrics.HorizontalBearingX.Ceiling(),
+                AdvanceY = _font.Face.Size.Metrics.NominalHeight
+            };
 
             _currentX += advanceX + _font.Face.Size.Metrics.NominalWidth;
             return finalCharacter;

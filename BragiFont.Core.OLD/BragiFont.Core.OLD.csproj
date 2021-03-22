@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>BragiFont</RootNamespace>
-    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -98,4 +98,5 @@ Screenshot:
 
 
 # Future Plans
-- Add support for text rotation, scale, etc. (i.e. the other parameters supported by spritebatch.DrawString())
+- Add support for embedding some HTML or Markdown style commands in text to control boldness, italic characters, underlines, and colors
+- Add built-in support for bidirectional text handling (i.e. a mix of RTL and LTR text in the same string)

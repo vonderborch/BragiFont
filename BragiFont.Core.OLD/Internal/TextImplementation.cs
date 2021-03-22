@@ -20,11 +20,6 @@ namespace BragiFont.Internal
             Font = font;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextImplementation"/> class.
-        /// </summary>
-        /// <param name="text">The old text object to copy.</param>
-        public TextImplementation(Text text) : base(text) { }
     }
 
 }

@@ -4,10 +4,728 @@
         <name>BragiFont.FNA</name>
     </assembly>
     <members>
+        <member name="T:BragiFont.Bragi">
+            <summary>
+            The core font system.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="F:BragiFont.Bragi.Library">
+            <summary>
+            The SharpFont library.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Bragi.Fonts">
+            <summary>
+            The fonts we haved cached.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Bragi.#cctor">
+            <summary>
+            Initializes the <see cref="T:BragiFont.Bragi"/> class.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Bragi.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:BragiFont.Bragi"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:BragiFont.Bragi.Core">
+            <summary>
+            Gets the FontSystem.
+            </summary>
+            <value>
+            The FontSystem.
+            </value>
+        </member>
+        <member name="P:BragiFont.Bragi.GraphicsDevice">
+            <summary>
+            Gets the graphics device.
+            </summary>
+            <value>
+            The graphics device.
+            </value>
+        </member>
+        <member name="M:BragiFont.Bragi.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Bragi.Initialize(Microsoft.Xna.Framework.Graphics.GraphicsDevice)">
+            <summary>
+            Initializes the specified graphics device.
+            </summary>
+            <param name="graphicsDevice">The graphics device.</param>
+        </member>
+        <member name="M:BragiFont.Bragi.GetFont(System.String,System.Int32,Microsoft.Xna.Framework.Graphics.GraphicsDevice,System.Boolean,System.Char[])">
+            <summary>
+            Gets or loads the specified font with the specified size.
+            </summary>
+            <param name="path">The path to load the font from.</param>
+            <param name="size">The size of the font.</param>
+            <param name="graphicsDevice">The graphics device. Optional, but required if Bragi.Core.Initialize() hasn't been called yet.</param>
+            <param name="preGenerateCharacters">if set to <c>true</c> [pre generate characters].</param>
+            <param name="charactersToPregenerate">The characters to pregenerate.</param>
+            <returns>The Font that matches the specified parameters.</returns>
+            <exception cref="T:System.Exception">GraphicsDevice is not initialized! Please either initialize Bragi.Core or provide the GraphicsDevice when getting a new font.</exception>
+        </member>
+        <member name="M:BragiFont.Bragi.RemoveFont(System.Tuple{System.String,System.Int32})">
+            <summary>
+            Removes a font from the system.
+            </summary>
+            <param name="key">The key for the font we want to remove.</param>
+        </member>
+        <member name="T:BragiFont.Constants">
+            <summary>
+            Various constants defined for the font system.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DEFAULT_HIDEF_TEXTURE_SIZE">
+            <summary>
+            The default hidef texture size
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DEFAULT_REACH_TEXTURE_SIZE">
+            <summary>
+            The default reach texture size
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DEFAULT_CACHE_SURFACE_FORMAT">
+            <summary>
+            The default cache surface format
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.GlyphBitmapOrigin">
+            <summary>
+            The glyph bitmap origin
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants._defaultCharacterList">
+            <summary>
+            The default character list
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DefaultCharacters">
+            <summary>
+            The default characters
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DefaultLoadFlags">
+            <summary>
+            The default load flags
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DefaultLoadTarget">
+            <summary>
+            The default load target
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DefaultRenderMode">
+            <summary>
+            The default render mode
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.DefaultSpacesInTab">
+            <summary>
+            The default spaces in a tab
+            </summary>
+        </member>
+        <member name="F:BragiFont.Constants.KerningSanityMultiplier">
+            <summary>
+            The kerning sanity multiplier
+            </summary>
+        </member>
+        <member name="M:BragiFont.Constants.#cctor">
+            <summary>
+            Initializes the <see cref="T:BragiFont.Constants"/> class.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Constants.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:BragiFont.Constants"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:BragiFont.Constants.Settings">
+            <summary>
+            Gets the settings.
+            </summary>
+            <value>
+            The settings.
+            </value>
+        </member>
+        <member name="P:BragiFont.Constants.DefaultCharacterList">
+            <summary>
+            Gets or sets the default character list.
+            </summary>
+            <value>
+            The default character list.
+            </value>
+        </member>
+        <member name="T:BragiFont.Font">
+            <summary>
+            A Font that can be used to draw text to the screen
+            </summary>
+            <seealso cref="T:System.IEquatable`1" />
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="F:BragiFont.Font.FontFace">
+            <summary>
+            The font face
+            </summary>
+        </member>
+        <member name="F:BragiFont.Font.FontFamilyName">
+            <summary>
+            The font family
+            </summary>
+        </member>
+        <member name="F:BragiFont.Font.FontFaceSize">
+            <summary>
+            The font size
+            </summary>
+        </member>
+        <member name="F:BragiFont.Font._glyphCaches">
+            <summary>
+            Caches of glyphs
+            </summary>
+        </member>
+        <member name="F:BragiFont.Font.KeyTuple">
+            <summary>
+            The key for this Font
+            </summary>
+        </member>
+        <member name="F:BragiFont.Font.Characters">
+            <summary>
+            The characters that we currently have generated glyphs for
+            </summary>
+        </member>
+        <member name="M:BragiFont.Font.#ctor(System.Tuple{System.String,System.Int32},SharpFont.Face,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BragiFont.Font"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="face">The font face.</param>
+            <param name="fontSize">Size of the font.</param>
+        </member>
+        <member name="P:BragiFont.Font.Key">
+            <summary>
+            Gets the key for this Font.
+            </summary>
+            <value>
+            The key.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.FontFamily">
+            <summary>
+            Gets the font family.
+            </summary>
+            <value>
+            The font family.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.Face">
+            <summary>
+            Gets the font face.
+            </summary>
+            <value>
+            The face.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.FontSize">
+            <summary>
+            Gets the size of the font.
+            </summary>
+            <value>
+            The size of the font.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.LoadFlags">
+            <summary>
+            Gets or sets the load flags.
+            </summary>
+            <value>
+            The load flags.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.LoadTarget">
+            <summary>
+            Gets or sets the load target.
+            </summary>
+            <value>
+            The load target.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.RenderMode">
+            <summary>
+            Gets or sets the render mode.
+            </summary>
+            <value>
+            The render mode.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.SpacesInTab">
+            <summary>
+            Gets or sets the number of spaces we'll use when a tab is requested.
+            </summary>
+            <value>
+            The spaces in tab.
+            </value>
+        </member>
+        <member name="P:BragiFont.Font.GlyphHeight">
+            <summary>
+            Gets the height of glyphs in the Font.
+            </summary>
+            <value>
+            The height of the glyph.
+            </value>
+        </member>
+        <member name="M:BragiFont.Font.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Font.Equals(BragiFont.Font)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.DisposeFinal">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Font.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.ToString">
+            <summary>
+            Converts the Font to a string to provide debug information on the font.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.op_Equality(BragiFont.Font,BragiFont.Font)">
+            <summary>
+            Implements the operator ==.
+            </summary>
+            <param name="left">The left.</param>
+            <param name="right">The right.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.op_Inequality(BragiFont.Font,BragiFont.Font)">
+            <summary>
+            Implements the operator !=.
+            </summary>
+            <param name="left">The left.</param>
+            <param name="right">The right.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Font.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,System.String,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Draws the text to the screen at the specified position and with the specified color.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="text">The text.</param>
+            <param name="color">The color.</param>
+            <param name="boundaries">The boundaries.</param>
+        </member>
+        <member name="M:BragiFont.Font.MakeText(System.Text.StringBuilder)">
+            <summary>
+            Pre-generates a list of Glyphs to draw to the string.
+            </summary>
+            <param name="text">The text.</param>
+            <returns>A Text object representing the Glyphs we need to draw to the screen for the input string.</returns>
+        </member>
+        <member name="M:BragiFont.Font.MakeText(System.String)">
+            <summary>
+            Pre-generates a list of Glyphs to draw to the string.
+            </summary>
+            <param name="text">The text.</param>
+            <returns>A Text object representing the Glyphs we need to draw to the screen for the input string.</returns>
+        </member>
+        <member name="M:BragiFont.Font.MeasureText(System.Text.StringBuilder)">
+            <summary>
+            Measures the text.
+            </summary>
+            <param name="text">The text.</param>
+            <returns>The size of the text.</returns>
+        </member>
+        <member name="M:BragiFont.Font.MeasureText(System.String)">
+            <summary>
+            Measures the text.
+            </summary>
+            <param name="text">The text.</param>
+            <returns>The size of the text.</returns>
+        </member>
+        <member name="M:BragiFont.Font.PregenerateCharacters(System.Char[])">
+            <summary>
+            Pre-generates the characters.
+            </summary>
+            <param name="charactersToPregenerate">The characters to pre-generate.</param>
+        </member>
+        <member name="M:BragiFont.Font.GetKerning(BragiFont.Internal.Character,BragiFont.Internal.Character)">
+            <summary>
+            Gets the kerning between two characters.
+            </summary>
+            <param name="left">The left.</param>
+            <param name="right">The right.</param>
+            <returns>The kerning between the characters.</returns>
+        </member>
+        <member name="M:BragiFont.Font.TryGetCharacter(System.Char,BragiFont.Internal.Character@)">
+            <summary>
+            Tries to get a Character object representing a requested char, and if we haven't generated it already, we generate the character.
+            </summary>
+            <param name="character">The character we want to fetch.</param>
+            <param name="bragiCharacter">The character object representing the char.</param>
+            <returns>Whether we were able to fetch the character.</returns>
+        </member>
+        <member name="M:BragiFont.Font.GenerateCharacter(System.Char)">
+            <summary>
+            Generates the character.
+            </summary>
+            <param name="character">The character.</param>
+            <returns>The generated character</returns>
+            <exception cref="T:System.Exception">Could not generate character [{character}]!</exception>
+        </member>
+        <member name="T:BragiFont.Internal.Character">
+            <summary>
+            A character in the font system.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.AdvanceX">
+            <summary>
+            The X Advance of the character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.AdvanceY">
+            <summary>
+            The Y Advance of the character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.BearingX">
+            <summary>
+            The X bearing of the character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.Boundary">
+            <summary>
+            The position and boundaries of the Character on the GlyphCache's Texture.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.Char">
+            <summary>
+            The Character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.Index">
+            <summary>
+            The index of the Character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.Kerning">
+            <summary>
+            Kerning for the character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.Character.Texture">
+            <summary>
+            The GlyphCache that the character is associated with.
+            </summary>
+        </member>
+        <member name="P:BragiFont.Internal.Character.BearingWithWidth">
+            <summary>
+            The Bearing of the Character with the Width added.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Internal.Character.ToString">
+            <summary>
+            Converts the character to a string for debug purposes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BragiFont.Internal.FontImplementation">
+            <summary>
+            An implementation of the Font object.
+            </summary>
+            <seealso cref="T:BragiFont.Font" />
+        </member>
+        <member name="M:BragiFont.Internal.FontImplementation.#ctor(System.Tuple{System.String,System.Int32},SharpFont.Face,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BragiFont.Internal.FontImplementation"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="face">The font face.</param>
+            <param name="fontSize">Size of the font.</param>
+        </member>
+        <member name="M:BragiFont.Internal.FontImplementation.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:BragiFont.Internal.FontImplementation.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:BragiFont.Internal.FontImplementation.ToString">
+            <summary>
+            Converts to string.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:BragiFont.Internal.GlyphCache">
+            <summary>
+            A cache of Glyphs.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache.Width">
+            <summary>
+            The width of the GlyphCache.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache.Height">
+            <summary>
+            The height of the GlyphCache.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache._buffer">
+            <summary>
+            The buffer.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache._font">
+            <summary>
+            The font the GlyphCache is associated with.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache._characters">
+            <summary>
+            The characters that are part of this GlyphCache.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache._currentX">
+            <summary>
+            The current x position in the GlyphCache.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache._currentY">
+            <summary>
+            The current y position in the GlyphCache.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache.Full">
+            <summary>
+            Whether the Cache is full (true) or not (false).
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.GlyphCache.Texture">
+            <summary>
+            The texture the characters are cached on.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Internal.GlyphCache.#ctor(BragiFont.Font)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BragiFont.Internal.GlyphCache"/> class.
+            </summary>
+            <param name="font">The font.</param>
+        </member>
+        <member name="M:BragiFont.Internal.GlyphCache.AddCharacterToCache(System.Char,BragiFont.Internal.Character@)">
+            <summary>
+            Adds the character to cache.
+            </summary>
+            <param name="character">The character.</param>
+            <param name="characterCache">The character cache.</param>
+            <returns>Whether we could add the character to the cache or not.</returns>
+        </member>
+        <member name="M:BragiFont.Internal.GlyphCache.AddCharacter(System.Char,SharpFont.Glyph,SharpFont.BitmapGlyph)">
+            <summary>
+            Adds the character.
+            </summary>
+            <param name="character">The character.</param>
+            <param name="glyph">The glyph.</param>
+            <param name="bitmapGlyph">The bitmap glyph.</param>
+            <returns>The character that we added to the cache.</returns>
+        </member>
+        <member name="T:BragiFont.Internal.Helpers">
+            <summary>
+            Various helpers for use with the Font System.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Internal.Helpers.ConvertFloatToInt(System.Single)">
+            <summary>
+            Converts a float to an int.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>The int representing the float value.</returns>
+        </member>
+        <member name="M:BragiFont.Internal.Helpers.Convert1DArrayTo2DArray``1(``0[],System.Int32,System.Int32)">
+            <summary>
+            Converts the 1D array to a 2D array.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="baseArray">The base 1D array.</param>
+            <param name="width">The width.</param>
+            <param name="height">The height.</param>
+            <returns>The 2D array.</returns>
+        </member>
+        <member name="M:BragiFont.Internal.Helpers.Convert2DArrayTo1DArray``1(``0[0:,0:],System.Int32,System.Int32)">
+            <summary>
+            Converts the 2D array to a 1D array.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="baseArray">The base array.</param>
+            <param name="width">The width.</param>
+            <param name="height">The height.</param>
+            <returns>The 1D array.</returns>
+        </member>
+        <member name="T:BragiFont.Internal.TextCharacter">
+            <summary>
+            A Character in the Text object.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.TextCharacter.Character">
+            <summary>
+            The character.
+            </summary>
+        </member>
+        <member name="F:BragiFont.Internal.TextCharacter.Position">
+            <summary>
+            The position of the character in the Text object.
+            </summary>
+        </member>
+        <member name="M:BragiFont.Internal.TextCharacter.#ctor(BragiFont.Internal.Character,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BragiFont.Internal.TextCharacter"/> class.
+            </summary>
+            <param name="character">The character.</param>
+            <param name="position">The position.</param>
+        </member>
+        <member name="T:BragiFont.Internal.TextImplementation">
+            <summary>
+            The implementation of the Text object.
+            </summary>
+            <seealso cref="T:BragiFont.Text" />
+        </member>
+        <member name="M:BragiFont.Internal.TextImplementation.#ctor(System.String,BragiFont.Font)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BragiFont.Internal.TextImplementation"/> class.
+            </summary>
+            <param name="text">The text.</param>
+            <param name="font">The font.</param>
+        </member>
+        <member name="T:BragiFont.Text">
+            <summary>
+            A pre-generated list of characters that can be rendered
+            </summary>
+        </member>
+        <member name="F:BragiFont.Text.Characters">
+            <summary>
+            The characters that are used by this Text object
+            </summary>
+        </member>
+        <member name="F:BragiFont.Text.Font">
+            <summary>
+            The font that is used by this Text object
+            </summary>
+        </member>
+        <member name="P:BragiFont.Text.Width">
+            <summary>
+            Gets the width.
+            </summary>
+            <value>
+            The width.
+            </value>
+        </member>
+        <member name="P:BragiFont.Text.WidthInt">
+            <summary>
+            Gets the width as an int.
+            </summary>
+            <value>
+            The width int.
+            </value>
+        </member>
+        <member name="P:BragiFont.Text.Height">
+            <summary>
+            Gets the height.
+            </summary>
+            <value>
+            The height.
+            </value>
+        </member>
+        <member name="P:BragiFont.Text.HeightInt">
+            <summary>
+            Gets the height as an int.
+            </summary>
+            <value>
+            The height int.
+            </value>
+        </member>
+        <member name="P:BragiFont.Text.String">
+            <summary>
+            Gets the string that will be printed by this Text object.
+            </summary>
+            <value>
+            The string.
+            </value>
+        </member>
+        <member name="P:BragiFont.Text.Size">
+            <summary>
+            Gets the size of the object.
+            </summary>
+            <value>
+            The size.
+            </value>
+        </member>
+        <member name="M:BragiFont.Text.AddCharacter(BragiFont.Internal.TextCharacter)">
+            <summary>
+            Adds a character to the Text object.
+            </summary>
+            <param name="character">The character to add.</param>
+        </member>
+        <member name="M:BragiFont.Text.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws the text to the string.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="position">The position to draw the text at.</param>
+            <param name="color">The color to draw the text with.</param>
+        </member>
         <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Font,System.String,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
             <summary>
-            Draws text to the screen with the given font.
-            This method is SLOWER than the override that takes a BragiText instead of a string, as it will create and discard the glyphs every time.
+                Draws text to the screen with the given font.
+                This method is SLOWER than the override that takes a Text object instead of a string, as it will create and discard
+                the glyphs every time.
             </summary>
             <param name="spriteBatch">The spritebatch</param>
             <param name="font">The Font to use when rendering the string</param>
@@ -17,8 +735,9 @@
         </member>
         <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Font,System.Text.StringBuilder,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
             <summary>
-            Draws text to the screen with the given font.
-            This method is SLOWER than the override that takes a BragiText instead of a string, as it will create and discard the glyphs every time.
+                Draws text to the screen with the given font.
+                This method is SLOWER than the override that takes a Text object instead of a string, as it will create and discard
+                the glyphs every time.
             </summary>
             <param name="spriteBatch">The spritebatch</param>
             <param name="font">The Font to use when rendering the string</param>
@@ -28,10 +747,9 @@
         </member>
         <member name="M:DrawStringExtension.DrawString(Microsoft.Xna.Framework.Graphics.SpriteBatch,BragiFont.Text,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
             <summary>
-            Draw text to SpriteBatch with the given Font.
+                Draw text to the screen with the given Font.
             </summary>
             <param name="spriteBatch">The spritebatch</param>
-            <param name="font">The Font to use when rendering the string</param>
             <param name="text">The text to render.</param>
             <param name="position">Position at which to render the text</param>
             <param name="color">Color with which to render the text</param>

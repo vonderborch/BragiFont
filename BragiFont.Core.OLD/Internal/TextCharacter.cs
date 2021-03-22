@@ -10,7 +10,7 @@ namespace BragiFont.Internal
         /// <summary>
         /// The character.
         /// </summary>
-        public Glyph Character;
+        public Character Character;
 
         /// <summary>
         /// The position of the character in the Text object.
@@ -22,7 +22,7 @@ namespace BragiFont.Internal
         /// </summary>
         /// <param name="character">The character.</param>
         /// <param name="position">The position.</param>
-        public TextCharacter(Glyph character, Vector2 position)
+        public TextCharacter(Character character, Vector2 position)
         {
             Character = character;
             Position = position;
