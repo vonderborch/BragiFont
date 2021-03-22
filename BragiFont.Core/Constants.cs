@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using SharpFont;
 
 namespace BragiFont
@@ -105,5 +107,16 @@ namespace BragiFont
         /// The default character list.
         /// </value>
         public bool StoreFontFileData { get; set; } = true;
+
+        /// <summary>
+        /// A full arc of a circle
+        /// </summary>
+        public const float TWO_PI = (float)(2 * Math.PI);
+
+        /// <summary>
+        /// The maximum size of the TextCache object on a particular font
+        /// </summary>
+        public int MaxTextCacheSize = 16;
+
     }
 }

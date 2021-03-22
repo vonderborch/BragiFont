@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BaldurUI
+namespace BragiFont.MonogameDevEnv
 {
     public static class Program
     {

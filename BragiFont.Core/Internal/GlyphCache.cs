@@ -126,7 +126,7 @@ namespace BragiFont.Internal
             if (!(bitmapGlyph.Bitmap.Width == 0 || bitmapGlyph.Bitmap.Rows == 0))
             {
                 var cBox = glyph.GetCBox(GlyphBBoxMode.Pixels);
-                var bearingY = _font.Face.Glyph.Metrics.VerticalAdvance.Ceiling();
+                var bearingY = (int)_font.Face.Size.Metrics.NominalHeight;
                 var rectangle = new Rectangle(_currentX + cBox.Left, _currentY + (bearingY - cBox.Top), bitmapGlyph.Bitmap.Width, bitmapGlyph.Bitmap.Rows);
                 var dataLength = bitmapGlyph.Bitmap.BufferData.Length;
                 _buffer = new ushort[dataLength];

@@ -9,8 +9,10 @@ using System.Text;
 
 namespace BragiFont
 {
+
     public abstract class Font : IEquatable<Font>, IDisposable
     {
+
         /// <summary>
         /// Caches of glyphs
         /// </summary>
@@ -20,6 +22,11 @@ namespace BragiFont
         /// The characters that we currently have generated glyphs for
         /// </summary>
         internal Dictionary<char, Internal.Glyph> CharacterGlyphs = new Dictionary<char, Internal.Glyph>();
+
+        /// <summary>
+        /// The text cache
+        /// </summary>
+        internal Cache<string, Text> TextCache = new Cache<string, Text>(Constants.Settings.MaxTextCacheSize);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Font"/> class.
@@ -195,7 +202,125 @@ namespace BragiFont
                     underrun = 0;
                 }
 
-                spriteBatch.Draw(cachedCharacter.GlyphCache.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY + cachedCharacter.BearingY), cachedCharacter.Boundary, color);
+                spriteBatch.Draw(cachedCharacter.GlyphCache.Texture, new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY), cachedCharacter.Boundary, color);
+                offsetX += cachedCharacter.Boundary.Width;
+
+                // calculate kerning
+                if (i != finalCharacterIndex)
+                {
+                    var nextCharacter = text[i + 1];
+                    if (TryGetGlyph(nextCharacter, out var nextCachedCharacter))
+                    {
+                        var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
+                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
+                        if (kerning <= maxBounds && kerning >= -maxBounds)
+                        {
+                            offsetX += kerning;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, string text, Color color, Rectangle boundaries, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth)
+        {
+            // calculate our transformation matrix
+            var flipAdjustment = Vector2.Zero;
+            var flippedVertically = effects.HasFlag(SpriteEffects.FlipVertically);
+            var flippedHorizontally = effects.HasFlag(SpriteEffects.FlipHorizontally);
+
+            // if we've flipped, handle adjusting our location as required
+            if (flippedVertically || flippedHorizontally)
+            {
+                var size = MeasureText(text);
+
+                if (flippedHorizontally)
+                {
+                    origin.X *= -1;
+                    flipAdjustment.X -= size.X;
+                }
+
+                if (flippedVertically)
+                {
+                    origin.Y *= -1;
+                    flipAdjustment.Y = GlyphHeight - size.Y;
+                }
+            }
+
+            // Handle our rotation as required
+            var transformation = Matrix.Identity;
+            float cos, sin = 0;
+            var xScale = flippedHorizontally ? -scale.X : scale.X;
+            var yScale = flippedVertically ? -scale.Y : scale.Y;
+            var xOrigin = flipAdjustment.X - origin.X;
+            var yOrigin = flipAdjustment.Y - origin.Y;
+            if (Helpers.FloatsAreEqual(rotation, 0) || Helpers.FloatsAreEqual(rotation / Constants.TWO_PI, 1))
+            {
+                transformation.M11 = xScale;
+                transformation.M22 = yScale;
+                transformation.M41 = xOrigin * transformation.M11 + boundaries.X;
+                transformation.M42 = yOrigin * transformation.M22 + boundaries.Y;
+            }
+            else
+            {
+                cos = (float)Math.Cos(rotation);
+                sin = (float)Math.Sin(rotation);
+                transformation.M11 = xScale * cos;
+                transformation.M12 = xScale * sin;
+                transformation.M21 = yScale * -sin;
+                transformation.M22 = yScale * cos;
+                transformation.M41 = (xOrigin * transformation.M11 + yOrigin * transformation.M21) + boundaries.X;
+                transformation.M42 = (xOrigin * transformation.M12 + yOrigin * transformation.M22) + boundaries.Y;
+            }
+
+            // calculate the rest of the text position
+            var warpLine = boundaries.Width > 0;
+            var offsetX = 0;
+            var offsetY = 0;
+
+            var width = warpLine ? boundaries.Width : spriteBatch.GraphicsDevice.Viewport.Width;
+            var height = (boundaries.Height > 0 ? boundaries.Height : spriteBatch.GraphicsDevice.Viewport.Height) - boundaries.Y;
+
+            var countX = 0;
+            var underrun = 0;
+            var finalCharacterIndex = text.Length - 1;
+
+            for (var i = 0; i < text.Length; i++)
+            {
+                TryGetGlyph(text[i], out var cachedCharacter);
+
+                if (warpLine && offsetX + cachedCharacter.Boundary.Width + countX > width || text[i] == '\n')
+                {
+                    offsetX = 0;
+                    underrun = 0;
+                    offsetY += cachedCharacter.AdvanceY;
+                }
+
+                if (text[i] == '\r' || text[i] == '\n')
+                {
+                    continue;
+                }
+
+                if (offsetY > height || !warpLine && offsetX > width)
+                {
+                    return;
+                }
+
+                // calculate underrun
+                underrun += -cachedCharacter.BearingX;
+                if (offsetX == 0)
+                {
+                    offsetX += underrun;
+                }
+
+                if (underrun <= 0)
+                {
+                    underrun = 0;
+                }
+
+                var characterPosition = new Vector2(boundaries.X + offsetX, boundaries.Y + offsetY);
+                Vector2.Transform(ref characterPosition, ref transformation, out characterPosition);
+                spriteBatch.Draw(cachedCharacter.GlyphCache.Texture, characterPosition, cachedCharacter.Boundary, color, rotation, origin, scale, effects, layerDepth);
                 offsetX += cachedCharacter.Boundary.Width;
 
                 // calculate kerning
@@ -232,81 +357,87 @@ namespace BragiFont
         /// <returns>A Text object representing the Glyphs we need to draw to the screen for the input string.</returns>
         public Text MakeText(string text)
         {
-            var finalSize = new Vector2(0, 0);
-
-            var textResult = new TextImplementation(text, this);
-
-            var offsetX = 0;
-            var offsetY = 0;
-
-            var underrun = 0;
-            var finalCharacterIndex = text.Length - 1;
-
-            for (var i = 0; i < text.Length; i++)
+            Text textResult;
+            if (!TextCache.TryGetItem(text, out textResult))
             {
-                TryGetGlyph(text[i], out var cachedCharacter);
-                if (i == 0)
-                {
-                    finalSize.Y += cachedCharacter.Boundary.Height;
-                }
+                var finalSize = new Vector2(0, 0);
 
-                if (text[i] == '\n')
+                textResult = new TextImplementation(text, this);
+
+                var offsetX = 0;
+                var offsetY = 0;
+
+                var underrun = 0;
+                var finalCharacterIndex = text.Length - 1;
+
+                for (var i = 0; i < text.Length; i++)
                 {
-                    finalSize.X = Math.Max(offsetX, finalSize.X);
-                    offsetX = 0;
-                    underrun = 0;
-                    offsetY += cachedCharacter.AdvanceY;
-                    if (i != finalCharacterIndex)
+                    TryGetGlyph(text[i], out var cachedCharacter);
+                    if (i == 0)
                     {
-                        finalSize.Y += cachedCharacter.AdvanceY;
+                        finalSize.Y += cachedCharacter.Boundary.Height;
                     }
-                }
 
-                if (text[i] == '\r' || text[i] == '\n')
-                {
-                    continue;
-                }
-
-                // calculate underrun
-                underrun += -cachedCharacter.BearingX;
-                if (offsetX == 0)
-                {
-                    offsetX += underrun;
-                }
-
-                if (underrun <= 0)
-                {
-                    underrun = 0;
-                }
-
-                textResult.AddCharacter(new TextCharacter(cachedCharacter, new Vector2(offsetX, offsetY)));
-                offsetX += cachedCharacter.Boundary.Width;
-
-                // calculate kerning
-                if (i != finalCharacterIndex)
-                {
-                    var nextCharacter = text[i + 1];
-                    if (TryGetGlyph(nextCharacter, out var nextCachedCharacter))
+                    if (text[i] == '\n')
                     {
-                        var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
-                        var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
-                        if (kerning <= maxBounds && kerning >= -maxBounds)
+                        finalSize.X = Math.Max(offsetX, finalSize.X);
+                        offsetX = 0;
+                        underrun = 0;
+                        offsetY += cachedCharacter.AdvanceY;
+                        if (i != finalCharacterIndex)
                         {
-                            offsetX += kerning;
+                            finalSize.Y += cachedCharacter.AdvanceY;
                         }
                     }
+
+                    if (text[i] == '\r' || text[i] == '\n')
+                    {
+                        continue;
+                    }
+
+                    // calculate underrun
+                    underrun += -cachedCharacter.BearingX;
+                    if (offsetX == 0)
+                    {
+                        offsetX += underrun;
+                    }
+
+                    if (underrun <= 0)
+                    {
+                        underrun = 0;
+                    }
+
+                    textResult.AddCharacter(new TextCharacter(cachedCharacter, new Vector2(offsetX, offsetY)));
+                    offsetX += cachedCharacter.Boundary.Width;
+
+                    // calculate kerning
+                    if (i != finalCharacterIndex)
+                    {
+                        var nextCharacter = text[i + 1];
+                        if (TryGetGlyph(nextCharacter, out var nextCachedCharacter))
+                        {
+                            var kerning = GetKerning(cachedCharacter, nextCachedCharacter);
+                            var maxBounds = cachedCharacter.AdvanceX * Constants.Settings.KerningSanityMultiplier;
+                            if (kerning <= maxBounds && kerning >= -maxBounds)
+                            {
+                                offsetX += kerning;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        finalSize.X = Math.Max(offsetX, finalSize.X);
+                    }
                 }
-                else
-                {
-                    finalSize.X = Math.Max(offsetX, finalSize.X);
-                }
+
+                textResult.Width = finalSize.X;
+                textResult.Height = finalSize.Y;
+                textResult.Size = new Vector2(textResult.Width, textResult.Height);
+
+                TextCache.AddItemToCache(text, textResult);
             }
 
-            textResult.Width = finalSize.X;
-            textResult.Height = finalSize.Y;
-            textResult.Size = new Vector2(textResult.Width, textResult.Height);
-
-            return textResult;
+            return new TextImplementation(textResult);
         }
 
         /// <summary>
@@ -424,6 +555,15 @@ namespace BragiFont
         public override int GetHashCode()
         {
             return (FontFamily.GetHashCode() * 397) ^ Size.GetHashCode();
+        }
+
+        /// <summary>
+        /// Resizes the text cache.
+        /// </summary>
+        /// <param name="newCacheSize">New size of the cache.</param>
+        public void ResizeTextCache(int newCacheSize)
+        {
+            TextCache.MaxCacheSize = newCacheSize;
         }
 
         /// <summary>

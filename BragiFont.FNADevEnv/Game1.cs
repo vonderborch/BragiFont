@@ -1,15 +1,14 @@
-﻿using BragiFont;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BaldurUI
+namespace BragiFont.MonogameDevEnv
 {
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private string testString = "Hello\nWorld!";
+        private string testString = "Hello\nWorld! 123 () *&^$%#";
         private string fontFile1 = "Content\\PlayfairDisplayRegular-ywLOY.ttf";
         private string fontFile2 = "Content\\Trueno-wml2.otf";
         private Text text1;
@@ -57,9 +56,11 @@ namespace BaldurUI
 
             _spriteBatch.Begin();
 
-            _spriteBatch.DrawString(font1, testString, new Vector2(0, 0), Color.Blue);
+            _spriteBatch.DrawString(font1, testString, new Vector2(0, -15), Color.Blue);
+            _spriteBatch.DrawString(font1, testString, new Vector2(150, -15), Color.Pink, 0.1f, Vector2.Zero, new Vector2(.5f, .5f), SpriteEffects.None, 1f);
             _spriteBatch.DrawString(text2, new Vector2(50, 150), Color.Red);
-            _spriteBatch.DrawString(text1, new Vector2(50, 250), Color.Black, 1.0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
+            _spriteBatch.DrawString(text1, new Vector2(150, 300), Color.Black, 0.1f, Vector2.Zero, new Vector2(.5f, .5f), SpriteEffects.None, 1f);
+            _spriteBatch.DrawString(text1, new Vector2(150, 300), Color.Black, 0.1f, new Vector2(50, 50), new Vector2(.5f, .5f), SpriteEffects.FlipVertically, 1f);
 
             _spriteBatch.End();
 

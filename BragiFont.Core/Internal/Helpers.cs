@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BragiFont.Internal
 {
@@ -63,6 +65,23 @@ namespace BragiFont.Internal
             return array;
         }
 
+        /// <summary>
+        /// Checks whether two floats are approximately equivalent
+        /// </summary>
+        /// <param name="value1">The value1.</param>
+        /// <param name="value2">The value2.</param>
+        /// <param name="maxDifference">The maximum difference.</param>
+        /// <returns>Whether the floats are equivalent</returns>
+        public static bool FloatsAreEqual(float value1, float value2, float maxDifference = 0.00001f)
+        {
+            return Math.Abs(value1 - value2) <= maxDifference;
+        }
+
+        /// <summary>
+        /// Reads the a filestream and returns it as a byte array.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns>The filestream as a byte array</returns>
         public static byte[] ReadStream(Stream stream)
         {
             byte[] output;

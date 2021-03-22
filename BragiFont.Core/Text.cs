@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
 using BragiFont.Internal;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpFont.Cache;
 
 namespace BragiFont
 {
@@ -71,6 +73,25 @@ namespace BragiFont
         public Vector2 Size { get; internal set; }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Text"/> class.
+        /// </summary>
+        protected Text() { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Text"/> class.
+        /// </summary>
+        /// <param name="oldObject">The old object.</param>
+        protected Text(Text oldObject)
+        {
+            String = oldObject.String;
+            Size = oldObject.Size;
+            Height = oldObject.Height;
+            Width = oldObject.Width;
+            Font = oldObject.Font;
+            Characters = new List<TextCharacter>(oldObject.Characters);
+        }
+
+        /// <summary>
         /// Adds a character to the Text object.
         /// </summary>
         /// <param name="character">The character to add.</param>
@@ -114,29 +135,27 @@ namespace BragiFont
             // if we've flipped, handle adjusting our location as required
             if (flippedVertically || flippedHorizontally)
             {
-                Vector2 size = this.Size;
-
                 if (flippedHorizontally)
                 {
                     origin.X *= -1;
-                    flipAdjustment.X -= size.X;
+                    flipAdjustment.X -= Size.X;
                 }
 
                 if (flippedVertically)
                 {
                     origin.Y *= -1;
-                    flipAdjustment.Y = Font.GlyphHeight - size.Y;
+                    flipAdjustment.Y = Font.GlyphHeight - Size.Y;
                 }
             }
 
             // Handle our rotation as required
-            Matrix transformation = Matrix.Identity;
+            var transformation = Matrix.Identity;
             float cos, sin = 0;
             var xScale = flippedHorizontally ? -scale.X : scale.X;
             var yScale = flippedVertically ? -scale.Y : scale.Y;
             var xOrigin = flipAdjustment.X - origin.X;
             var yOrigin = flipAdjustment.Y - origin.Y;
-            if (rotation == 0)
+            if (Helpers.FloatsAreEqual(rotation, 0) || Helpers.FloatsAreEqual(rotation / Constants.TWO_PI, 1))
             {
                 transformation.M11 = xScale;
                 transformation.M22 = yScale;
@@ -145,8 +164,8 @@ namespace BragiFont
             }
             else
             {
-                cos = (float) Math.Cos(rotation);
-                sin = (float) Math.Sin(rotation);
+                cos = (float)Math.Cos(rotation);
+                sin = (float)Math.Sin(rotation);
                 transformation.M11 = xScale * cos;
                 transformation.M12 = xScale * sin;
                 transformation.M21 = yScale * -sin;
@@ -158,9 +177,9 @@ namespace BragiFont
             // ReSharper disable once ForCanBeConvertedToForeach
             for (var i = 0; i < Characters.Count; i++)
             {
-                var characterPosition = Characters[i].Position + position;
+                var characterPosition = Characters[i].Position;
                 Vector2.Transform(ref characterPosition, ref transformation, out characterPosition);
-                spriteBatch.Draw(Characters[i].Character.GlyphCache.Texture, characterPosition, Characters[i].Character.Boundary, color);
+                spriteBatch.Draw(Characters[i].Character.GlyphCache.Texture, characterPosition, Characters[i].Character.Boundary, color, rotation, origin, scale, effects, layerDepth);
             }
         }
 

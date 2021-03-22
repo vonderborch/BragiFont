@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/vonderborch/BragiFont</PackageProjectUrl>
     <Description>An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.</Description>
     <PackageTags>SharpFont, Monogame, SpriteFont, Font</PackageTags>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -23,6 +23,7 @@
     <Compile Include="..\BragiFont.Core\Constants.cs" Link="Constants.cs" />
     <Compile Include="..\BragiFont.Core\DrawStringExtensions.cs" Link="DrawStringExtensions.cs" />
     <Compile Include="..\BragiFont.Core\Font.cs" Link="Font.cs" />
+    <Compile Include="..\BragiFont.Core\Internal\Cache.cs" Link="Internal\Cache.cs" />
     <Compile Include="..\BragiFont.Core\Internal\FontImplementation.cs" Link="Internal\FontImplementation.cs" />
     <Compile Include="..\BragiFont.Core\Internal\Glyph.cs" Link="Internal\Glyph.cs" />
     <Compile Include="..\BragiFont.Core\Internal\GlyphCache.cs" Link="Internal\GlyphCache.cs" />
@@ -37,7 +38,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="SharpFont.NetStandard" Version="1.0.2" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>

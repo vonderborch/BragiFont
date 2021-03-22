@@ -4,13 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>BragiFont</RootNamespace>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
     <PackageReference Include="SharpFont.NetStandard" Version="1.0.2" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
