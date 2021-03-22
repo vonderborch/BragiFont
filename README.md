@@ -94,7 +94,7 @@ namespace BaldurUI
 ```
 
 Screenshot:
-![Screenshot](https://github.com/vonderborch/BragiFont/blob/master/Example.PNG?raw=true)
+![Screenshot](https://github.com/vonderborch/BragiFont/blob/main/Example.PNG?raw=true)
 
 
 # Future Plans
