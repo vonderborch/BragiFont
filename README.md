@@ -1,6 +1,15 @@
 # BragiFont
 An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.
 
+
+# NOTE
+This library has been deprecated in favor of https://github.com/vonderborch/Velentr.Font
+
+Future support and updates will be exclusively through Velentr.Font. Porting code over is very simple, mostly just replace instances of Bragi with Velentr.Font (or VelentrFont when accessing the Font singleton).
+
+
+
+
 # Installation
 There are nuget packages available for Monogame and FNA.
 - Monogame: [BragiFont.Monogame](https://www.nuget.org/packages/BragiFont.Monogame/)
