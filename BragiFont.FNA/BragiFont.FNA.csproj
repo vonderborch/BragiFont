@@ -9,9 +9,12 @@
     <Company>Christian Webber</Company>
     <RepositoryUrl>https://github.com/vonderborch/BragiFont</RepositoryUrl>
     <PackageProjectUrl>https://github.com/vonderborch/BragiFont</PackageProjectUrl>
-    <Description>An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.</Description>
+    <Description>An alternative solution for Monogame/FNA/XNA-derived frameworks that utilizes SharpFont to draw text rather than the traditional SpriteFont approach.
+
+NOTE: Deprecated in favor of Velentr.Font.FNA going forwards.</Description>
     <PackageTags>SharpFont, FNA, SpriteFont, Font</PackageTags>
     <Version>1.1.1</Version>
+    <PackageReleaseNotes>Deprecated in favor of Velentr.Font.FNA going forwards.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
